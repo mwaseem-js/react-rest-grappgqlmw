@@ -1,0 +1,43 @@
+//npm install apollo-server graphql graphql-tools axios
+
+
+const { ApolloServer, gql } = require('apollo-server');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+const axios = require('axios');
+
+const generateSchema = async () => {
+  // Fetch the REST API structure
+  const response = await axios.get('https://api.example.com/schema');
+  const apiSchema = response.data;
+
+  // Define typeDefs based on the API schema
+  const typeDefs = gql`
+    type Query {
+      ${apiSchema.map(endpoint => `${endpoint.name}: ${endpoint.type}`).join('\n')}
+    }
+  `;
+
+  // Define resolvers based on the API schema
+  const resolvers = {
+    Query: apiSchema.reduce((acc, endpoint) => {
+      acc[endpoint.name] = async () => {
+        const res = await axios.get(`https://api.example.com/${endpoint.name}`);
+        return res.data;
+      };
+      return acc;
+    }, {}),
+  };
+
+  return makeExecutableSchema({ typeDefs, resolvers });
+};
+
+const startServer = async () => {
+  const schema = await generateSchema();
+  const server = new ApolloServer({ schema });
+
+  server.listen().then(({ url }) => {
+    console.log(`🚀 Server ready at ${url}`);
+  });
+};
+
+startServer();
