@@ -1,14 +1,8 @@
 import React from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { EnterpriseTransaction, generateMockTransactions, TransactionStatus } from '../types/domain';
+import { EnterpriseTransaction, generateMockTransactions } from '../types/domain';
 
 const transactions = generateMockTransactions(10000);
-
-const statusStyles: Record<TransactionStatus, { background: string; color: string }> = {
-  COMPLETED: { background: '#dcfce7', color: '#166534' },
-  PENDING: { background: '#fef3c7', color: '#92400e' },
-  FAILED: { background: '#fee2e2', color: '#b91c1c' },
-};
 
 const formatAmount = (transaction: EnterpriseTransaction) =>
   `${transaction.currency} ${transaction.amount.toLocaleString('en-US', {
@@ -68,29 +62,30 @@ const VirtualizedTransactionFeed: React.FC = () => {
         <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative', width: '100%' }}>
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const transaction = transactions[virtualRow.index];
-            const statusStyle = statusStyles[transaction.status];
-            const sourceStyle = transaction.source === 'REST'
-              ? { background: '#dbeafe', color: '#1d4ed8' }
-              : { background: '#fae8ff', color: '#a21caf' };
-
             return (
               <article
                 key={transaction.id}
                 ref={rowVirtualizer.measureElement}
                 data-index={virtualRow.index}
-                style={{ alignItems: 'center', borderBottom: '1px solid #eef2f7', display: 'grid', gap: 14, gridTemplateColumns: 'minmax(190px, 1fr) minmax(150px, 0.7fr) auto', minHeight: 64, padding: '10px 16px', position: 'absolute', top: 0, transform: `translateY(${virtualRow.start}px)`, width: '100%' }}
+                style={{ alignItems: 'center', borderBottom: '1px solid #f1f5f9', boxSizing: 'border-box', display: 'flex', height: `${virtualRow.size}px`, justifyContent: 'space-between', left: 0, padding: '0 1.5rem', position: 'absolute', top: 0, transform: `translateY(${virtualRow.start}px)`, width: '100%' }}
               >
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ alignItems: 'center', display: 'flex', gap: 8, marginBottom: 5 }}>
-                    <span style={{ ...pillStyle, ...sourceStyle }}>{transaction.source}</span>
-                    <strong style={{ fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{transaction.description}</strong>
+                <div style={{ alignItems: 'center', display: 'flex', gap: '0.85rem', minWidth: 260 }}>
+                  <span style={{ backgroundColor: transaction.source === 'REST' ? '#e0f2fe' : '#fce7f3', borderRadius: 4, color: transaction.source === 'REST' ? '#0369a1' : '#be185d', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.04em', padding: '3px 8px' }}>
+                    {transaction.source}
+                  </span>
+                  <div>
+                    <div style={{ color: '#0f172a', fontSize: '0.9rem', fontWeight: 600 }}>{transaction.description}</div>
+                    <div style={{ color: '#64748b', fontSize: '0.75rem' }}>{transaction.referenceId}</div>
                   </div>
-                  <span style={{ color: '#64748b', fontFamily: 'ui-monospace, SFMono-Regular, monospace', fontSize: 12 }}>{transaction.referenceId}</span>
                 </div>
-                <div style={{ color: '#64748b', fontSize: 12 }}>{formatTimestamp(transaction.timestamp)}</div>
-                <div style={{ alignItems: 'flex-end', display: 'flex', flexDirection: 'column', gap: 5 }}>
-                  <strong style={{ fontSize: 14, whiteSpace: 'nowrap' }}>{formatAmount(transaction)}</strong>
-                  <span style={{ ...pillStyle, background: statusStyle.background, color: statusStyle.color }}>{transaction.status}</span>
+                <div style={{ color: '#64748b', fontSize: '0.8rem', textAlign: 'center' }}>{formatTimestamp(transaction.timestamp)}</div>
+                <div style={{ alignItems: 'center', display: 'flex', flexShrink: 0, gap: '1rem' }}>
+                  <div style={{ minWidth: 130, textAlign: 'right' }}>
+                    <div style={{ color: '#0f172a', fontSize: '0.925rem', fontWeight: 700, whiteSpace: 'nowrap' }}>{formatAmount(transaction)}</div>
+                  </div>
+                  <span style={{ backgroundColor: transaction.status === 'COMPLETED' ? '#ecfdf5' : transaction.status === 'PENDING' ? '#fffbeb' : '#fef2f2', borderRadius: '9999px', color: transaction.status === 'COMPLETED' ? '#047857' : transaction.status === 'PENDING' ? '#b45309' : '#b91c1c', fontSize: '0.725rem', fontWeight: 700, padding: '3px 10px', whiteSpace: 'nowrap' }}>
+                    {transaction.status}
+                  </span>
                 </div>
               </article>
             );
