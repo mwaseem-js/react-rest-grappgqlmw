@@ -3,17 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.11.8",
+    "@apollo/client": "^3.14.1",
+    "@tanstack/react-query": "^5.102.8",
+    "@tanstack/react-virtual": "^3.14.13",
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "apollo-server": "^3.13.0",
-    "axios": "^1.7.7",
-    "graphql": "^16.9.0",
+    "axios": "^1.20.0",
+    "graphql": "^16.14.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^5.0.15"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -38,5 +40,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^20.17.30",
+    "@types/react": "^18.3.31",
+    "msw": "^2.15.0",
+    "typescript": "^4.9.5",
+    "vitest": "^4.1.11"
   }
 }
