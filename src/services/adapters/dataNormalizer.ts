@@ -1,5 +1,5 @@
 // Adapter function to normalize data from REST and GraphQL sources
-import { CoreEntity, EnterpriseTransaction } from '../types/domain';
+import { CoreEntity, EnterpriseTransaction } from '../../types/domain';
 
 export function normalizeDataFromRest(rawData: any): CoreEntity {
   return {
@@ -30,7 +30,7 @@ export function normalizeRestTransaction(rawData: any): EnterpriseTransaction {
     currency: rawData.currency,
     timestamp: rawData.created_at,
     status: rawData.status,
-    metadata: rawData.metadata,
+    description: rawData.description || 'Enterprise transaction',
   };
 }
 
@@ -43,6 +43,6 @@ export function normalizeGraphQLTransaction(node: any): EnterpriseTransaction {
     currency: node.currency,
     timestamp: node.created_at,
     status: node.status,
-    metadata: node.metadata,
+    description: node.description || 'Enterprise transaction',
   };
 }
