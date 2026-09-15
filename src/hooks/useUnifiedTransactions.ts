@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useQuery as useApolloQuery, gql } from '@apollo/client';
 import restClient from '../api/restClient';
@@ -39,10 +40,16 @@ export function useUnifiedTransactions() {
     error: graphqlError,
   } = useApolloQuery(GRAPHQL_QUERY, { client: graphqlClient });
 
-  const normalizedGraphQLData = graphqlData?.transactions.map(normalizeGraphQLTransaction) || [];
+  const normalizedGraphQLData = useMemo(
+    () => graphqlData?.transactions.map(normalizeGraphQLTransaction) || [],
+    [graphqlData]
+  );
 
-  const combinedData: EnterpriseTransaction[] = [...(restData || []), ...normalizedGraphQLData].sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  const combinedData: EnterpriseTransaction[] = useMemo(
+    () => [...(restData || []), ...normalizedGraphQLData].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    ),
+    [restData, normalizedGraphQLData]
   );
 
   return {
