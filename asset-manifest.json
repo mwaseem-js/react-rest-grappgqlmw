@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/enterprise-dual-protocol-client/static/js/main.ccf05e12.js",
+    "index.html": "/enterprise-dual-protocol-client/index.html",
+    "main.ccf05e12.js.map": "/enterprise-dual-protocol-client/static/js/main.ccf05e12.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.ccf05e12.js"
+  ]
+}
